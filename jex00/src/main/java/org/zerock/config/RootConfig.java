@@ -2,6 +2,8 @@ package org.zerock.config;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +12,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan(basePackages= {"org.zerock.sample"})
+@ComponentScan(basePackages = { "org.zerock.sample" })
 public class RootConfig {
 
 	@Bean
@@ -20,10 +22,17 @@ public class RootConfig {
 		hikariConfig.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:xe");
 		hikariConfig.setUsername("c##himedia");
 		hikariConfig.setPassword("himedia");
-		
+
 		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
-		
+
 		return dataSource;
 	}
-	
+
+	@Bean
+	public SqlSessionFactory sqlSessionFactory() throws Exception {
+		SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
+		sqlSessionFactory.setDataSource(dataSource());
+
+		return (SqlSessionFactory) sqlSessionFactory.getObject();
+	}
 }
